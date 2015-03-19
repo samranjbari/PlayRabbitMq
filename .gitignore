@@ -1,0 +1,6 @@
+/MQ.Web/bin/
+/MQ.Web/obj/
+/MQ.Console/bin/
+/MQ.Console/obj/
+/packages/
+!packages/repositories.config

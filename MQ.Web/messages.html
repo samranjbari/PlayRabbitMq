@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Live Message</title>
+    <style>
+        #log {
+            border: 1px solid #ccc;
+            width: 400px;
+            margin: 10px 0 0 0;
+            padding: 10px;
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+        #log div {
+            font-size: 13px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <div id="container">
+            <input type="text" id="msg" />
+            <input type="submit" value="Send Long running job" id="send" />
+        
+            <div id="log">
+            
+            </div>
+        </div>
+    </form>
+
+    <script src="Scripts/jquery-1.7.1.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="signalr/hubs"></script>
+    
+    <script type="text/javascript">
+        $(function () {
+            var hub = $.connection.messageHub;
+            hub.client.doSomething = function (msg) {
+                $("#log").append("<div> Response => " + msg + " is completed!</div>");
+                document.getElementById('log').scrollTop += 100;
+            };
+            
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                $("#log").append("<div>" + 'connection started...' + "</div>");
+            });
+
+            $("#send").click(function (e) {
+                console.time("duration");
+                e.preventDefault();
+
+                $.post('/home/dowork', {
+                    msg: $("#msg").val()
+                }, function (resp) {
+                    console.timeEnd("duration");
+                    $("#log").append("<div>" + "Done sending... Will let you know when it's done :)" + "</div>");
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
